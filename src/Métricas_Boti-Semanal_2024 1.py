@@ -409,7 +409,7 @@ mmu.reset_index(inplace=True, drop=True)
 original = mmu[mmu.id.isin(os.message_id.values)]
 
 
-print("HASTA ACA LLEGUE ok  0")
+print("Empieza codigo de Debug...")
 
 # Obtiene la respuesta subsiguiente.
 #respuesta = mmu.loc[original.index + 1]
@@ -418,76 +418,100 @@ next_index = original.index + 1
 if next_index.isin(mmu.index).all():
     respuesta = mmu.loc[next_index]
 else:
-    next_index_exists = next_index[next_index.isin(mmu.index)]  # Filtra los índices siguientes que existen en mmu
+    next_index_exists = next_index[next_index.isin(mmu.index)]  # Filtro los índices siguientes que existen en mmu
     respuesta = mmu.loc[next_index_exists]
 
 
 
-print("HASTA ACA LLEGUE ok  1")
+print("Paso el problema del Index que nos daba el viernes...")
 
-# Crea un DataFrame 'conv' con información de la conversación, como la sesión, la hora de creación y mensajes originales.
-# También incluye información sobre el intent, el primer botón, y respuestas subsiguientes.
-# conv = pd.DataFrame(data={'session_id': original.session_id.values, 'creation_time': original.creation_time.values, 'original': original.message.values, 
-#                           'intent': mm.loc[mm[mm.id.isin(original.id.values)].index + 1].rule_name.values,
-#                           'bot1_id': [m if v else None for m, v in zip(mm.loc[mm[mm.id.isin(original.id.values)].index + 1].id.values, original.session_id.values==mm.loc[mm[mm.id.isin(original.id.values)].index + 1].session_id.values)] ,
-#                           'respuesta': [m for m in zip(respuesta.message.values)],
-#                           'respuesta_type': [m for m in zip(respuesta.message_type.values)],
-#                           #'respuesta_rule': [m for m in zip(mm.loc[mm[mm.id.isin(respuesta.id.values)].index + 1].rule_name.values)]
-
-
-#                           #'respuesta': [m if v else None for m, v in zip(respuesta.message.values, original.session_id.values==respuesta.session_id.values)],
-#                           #'respuesta_type': [m if v else None for m, v in zip(respuesta.message_type.values, original.session_id.values==respuesta.session_id.values)],
-#                           #'respuesta_rule': [m if v else None for m, v in zip(mm.loc[mm[mm.id.isin(respuesta.id.values)].index + 1].rule_name.values, original.session_id.values==mm.loc[mm[mm.id.isin(respuesta.id.values)].index + 1].session_id.values)]
-                          
-#                           })
-
-# Obtener las listas de datos
-session_id_values = original.session_id.values
-creation_time_values = original.creation_time.values
-message_values = original.message.values
-intent_values = mm.loc[mm[mm.id.isin(original.id.values)].index + 1].rule_name.values
-bot1_id_values = [m if v else None for m, v in zip(mm.loc[mm[mm.id.isin(original.id.values)].index + 1].id.values, original.session_id.values==mm.loc[mm[mm.id.isin(original.id.values)].index + 1].session_id.values)]
-respuesta_message_values = respuesta.message.values
-respuesta_message_type_values = respuesta.message_type.values
-
-# Crear un diccionario de listas con sus nombres
-listas = {
-    'session_id_values': session_id_values,
-    'creation_time_values': creation_time_values,
-    'message_values': message_values,
-    'intent_values': intent_values,
-    'bot1_id_values': bot1_id_values,
-    'respuesta_message_values': respuesta_message_values,
-    'respuesta_message_type_values': respuesta_message_type_values
-}
-
-# Verificar la longitud de cada lista e imprimir las longitudes distintas
-longitudes_distintas = False
-for nombre_lista, lista in listas.items():
-    longitud = len(lista)
-    print(f"Longitud de {nombre_lista}: {longitud}")
-    if longitud != len(session_id_values):
-        longitudes_distintas = True
-
-# Si todas las listas tienen la misma longitud, crear el DataFrame
-if not longitudes_distintas:
-    conv = pd.DataFrame(data={
-        'session_id': session_id_values,
-        'creation_time': creation_time_values,
-        'original': message_values,
-        'intent': intent_values,
-        'bot1_id': bot1_id_values,
-        'respuesta': respuesta_message_values,
-        'respuesta_type': respuesta_message_type_values
-    })
-    print("Se ha creado el DataFrame 'conv' correctamente.")
+# Verifico si 'respuesta.message.values' es una serie iterable
+if hasattr(respuesta, 'message') and hasattr(respuesta.message, 'values'):
+    # Calculo las longitudes de 'original.session_id.values' y 'respuesta.session_id.values'
+    len_original = len(original.session_id.values)
+    len_respuesta = len(respuesta.session_id.values)
+    
+    print(f"Longitud de original.session_id.values: {len_original}")
+    print(f"Longitud de respuesta.session_id.values: {len_respuesta}")
+    
+    # las comparo a ver que pasa
+    if len_original == len_respuesta:
+        print("Las longitudes son iguales.")
+        
+        # Comparo todas las sesiones
+        sessions_match = original.session_id.values == respuesta.session_id.values
+        
+        # Mando por pantalla las comparaciones
+        print("Comparación de sesiones:")
+        for i, match in enumerate(sessions_match):
+            print(f"Sesión {i+1}: {'Coincide' if match else 'No coincide'}")
+        
+        # Crea el DataFrame 'conv' en caso que las comparaciones me hayan dado posta
+        conv = pd.DataFrame(data={'session_id': original.session_id.values, 
+                                  'creation_time': original.creation_time.values, 
+                                  'original': original.message.values, 
+                                  'intent': mm.loc[mm[mm.id.isin(original.id.values)].index + 1].rule_name.values,
+                                  'bot1_id': [m if v else None for m, v in zip(mm.loc[mm[mm.id.isin(original.id.values)].index + 1].id.values, original.session_id.values==mm.loc[mm[mm.id.isin(original.id.values)].index + 1].session_id.values)],
+                                  'respuesta': [m if v else None for m, v in zip(respuesta.message.values, original.session_id.values==respuesta.session_id.values)],
+                                  'respuesta_type': [m if v else None for m, v in zip(respuesta.message_type.values, original.session_id.values==respuesta.session_id.values)],
+                                  'respuesta_rule': [m if v else None for m, v in zip(mm.loc[mm[mm.id.isin(respuesta.id.values)].index + 1].rule_name.values, original.session_id.values==mm.loc[mm[mm.id.isin(respuesta.id.values)].index + 1].session_id.values)]
+                                  })
+    else:
+        print("La longitud de original.session_id.values y respuesta.session_id.values no coincide.")
 else:
-    print("¡Error! Las listas tienen diferentes longitudes, no se pudo crear el DataFrame.")
+    print("'respuesta.message.values' no es una serie iterable.")
 
 
-print("HASTA ACA LLEGUE ok 2")
-import sys
-sys.exit()
+print("Fin del codigo de debug")
+
+
+# # Obtener las listas de datos
+# session_id_values = original.session_id.values
+# creation_time_values = original.creation_time.values
+# message_values = original.message.values
+# intent_values = mm.loc[mm[mm.id.isin(original.id.values)].index + 1].rule_name.values
+# bot1_id_values = [m if v else None for m, v in zip(mm.loc[mm[mm.id.isin(original.id.values)].index + 1].id.values, original.session_id.values==mm.loc[mm[mm.id.isin(original.id.values)].index + 1].session_id.values)]
+# respuesta_message_values = respuesta.message.values
+# respuesta_message_type_values = respuesta.message_type.values
+
+# # Crear un diccionario de listas con sus nombres
+# listas = {
+#     'session_id_values': session_id_values,
+#     'creation_time_values': creation_time_values,
+#     'message_values': message_values,
+#     'intent_values': intent_values,
+#     'bot1_id_values': bot1_id_values,
+#     'respuesta_message_values': respuesta_message_values,
+#     'respuesta_message_type_values': respuesta_message_type_values
+# }
+
+# # Verificar la longitud de cada lista e imprimir las longitudes distintas
+# longitudes_distintas = False
+# for nombre_lista, lista in listas.items():
+#     longitud = len(lista)
+#     print(f"Longitud de {nombre_lista}: {longitud}")
+#     if longitud != len(session_id_values):
+#         longitudes_distintas = True
+
+# # Si todas las listas tienen la misma longitud, crear el DataFrame
+# if not longitudes_distintas:
+#     conv = pd.DataFrame(data={
+#         'session_id': session_id_values,
+#         'creation_time': creation_time_values,
+#         'original': message_values,
+#         'intent': intent_values,
+#         'bot1_id': bot1_id_values,
+#         'respuesta': respuesta_message_values,
+#         'respuesta_type': respuesta_message_type_values
+#     })
+#     print("Se ha creado el DataFrame 'conv' correctamente.")
+# else:
+#     print("¡Error! Las listas tienen diferentes longitudes, no se pudo crear el DataFrame.")
+
+
+# print("HASTA ACA LLEGUE ok 2")
+# import sys
+# sys.exit()
 
 # Crea una nueva columna 'categoria' en 'conv' utilizando la función 'categoria'.
 conv['categoria'] = [categoria(m, t, r) if m is not None else 'abandono' for m, t, r in zip(conv.respuesta, conv.respuesta_type, conv.intent)]
