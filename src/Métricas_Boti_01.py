@@ -14,22 +14,15 @@ import os
 import sys
 
 # Define el directorio predeterminado
-directorio_predeterminado = 'C:\GCBA\Metricas_Boti_Semanal_2024\data'
+directorio_predeterminado = '..\data'
 
 # Cambiar al directorio predeterminado
 os.chdir(directorio_predeterminado)
 
 # Ahora el directorio predeterminado es el nuevo directorio de trabajo
 
-
-# #### Importamos los DataFrames
-
-
 # usuarios que mandaron @test_on @test_off @reset_user INCORPORAR LOS NUEVOS INTENT PARA TESTEO QUE SE AGREGARON EN FEBRERO DEL 2024
-
 testers=pd.read_csv('testers.csv')
-
-
 rule_ne='PLBWX5XYGQ2B3GP7IN8Q-nml045fna3@b.m-1669990832420'
 
 """
@@ -50,9 +43,6 @@ mm.creation_time=mm.creation_time.dt.tz_localize(None)
 mm1=mm[mm['creation_time']>=np.datetime64('2024-02-19 13:00:00') ]
 
 
-#print(mm1.rule_name.nunique())
-
-
 # Convierte la columna 'creation_time' de mm1 al formato de fecha y hora.
 mm1.creation_time = pd.to_datetime(mm1.creation_time)
 
@@ -70,10 +60,6 @@ mm1 = mm1[~mm1.usuario.isin(testers)]
 
 # Reinicia los índices del DataFrame después de realizar las operaciones anteriores y descarta los índices anteriores.
 mm1.reset_index(inplace=True, drop=True)
-
-
-#cantidad de elementos distintos en columna  "usuario"
-#print(mm1.usuario.nunique())
 
 
 """
