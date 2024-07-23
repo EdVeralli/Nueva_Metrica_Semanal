@@ -452,9 +452,9 @@ if hasattr(respuesta, 'message') and hasattr(respuesta.message, 'values'):
                                   'original': original.message.values, 
                                   'intent': mm.loc[mm[mm.id.isin(original.id.values)].index + 1].rule_name.values,
                                   'bot1_id': [m if v else None for m, v in zip(mm.loc[mm[mm.id.isin(original.id.values)].index + 1].id.values, original.session_id.values==mm.loc[mm[mm.id.isin(original.id.values)].index + 1].session_id.values)],
-                                  'respuesta': [m if v else None for m, v in zip(respuesta.message.values, original.session_id.values==respuesta.session_id.values)],
-                                  'respuesta_type': [m if v else None for m, v in zip(respuesta.message_type.values, original.session_id.values==respuesta.session_id.values)],
-                                  'respuesta_rule': [m if v else None for m, v in zip(mm.loc[mm[mm.id.isin(respuesta.id.values)].index + 1].rule_name.values, original.session_id.values==mm.loc[mm[mm.id.isin(respuesta.id.values)].index + 1].session_id.values)]
+                                  #'respuesta': [m if v else None for m, v in zip(respuesta.message.values, original.session_id.values==respuesta.session_id.values)],
+                                  #'respuesta_type': [m if v else None for m, v in zip(respuesta.message_type.values, original.session_id.values==respuesta.session_id.values)],
+                                  #'respuesta_rule': [m if v else None for m, v in zip(mm.loc[mm[mm.id.isin(respuesta.id.values)].index + 1].rule_name.values, original.session_id.values==mm.loc[mm[mm.id.isin(respuesta.id.values)].index + 1].session_id.values)]
                                   })
     else:
         print("La longitud de original.session_id.values y respuesta.session_id.values no coincide.")
